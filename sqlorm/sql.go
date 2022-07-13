@@ -157,7 +157,9 @@ func generateSqlTag(field *ast.Field) (string, error) {
 	}
 
 	if _, found := sqlSettings["NOT NULL"]; !found { // default: not null
-		if !isPrimaryKey(field) {
+		if shouldBeNotNull(field) {
+			sqlSettings["NOT NULL"] = "NOT NULL"
+		} else {
 			sqlSettings["NOT NULL"] = "NULL"
 		}
 	}
