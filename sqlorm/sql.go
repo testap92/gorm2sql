@@ -157,7 +157,9 @@ func generateSqlTag(field *ast.Field) (string, error) {
 	}
 
 	if _, found := sqlSettings["NOT NULL"]; !found { // default: not null
-		sqlSettings["NOT NULL"] = "NULL"
+		if !isPrimaryKey(field) {
+			sqlSettings["NOT NULL"] = "NULL"
+		}
 	}
 
 	additionalType := sqlSettings["NOT NULL"] + " " + sqlSettings["UNIQUE"]
@@ -222,6 +224,21 @@ func isPrimaryKey(field *ast.Field) bool {
 
 	if len(field.Names) > 0 && strings.ToUpper(field.Names[0].Name) == "ID" {
 		return true
+	}
+
+	return false
+}
+
+func shouldBeNotNull(field *ast.Field) bool {
+	if isPrimaryKey(field) {
+		return true
+	}
+
+	if len(field.Names) > 0 {
+		fname := strings.ToUpper(field.Names[0].Name)
+		if fname == "CreatedAt" || fname == "UpdatedAt" {
+			return true
+		}
 	}
 
 	return false
