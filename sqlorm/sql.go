@@ -238,7 +238,7 @@ func shouldBeNotNull(field *ast.Field) bool {
 
 	if len(field.Names) > 0 {
 		fname := strings.ToUpper(field.Names[0].Name)
-		if fname == "CreatedAt" || fname == "UpdatedAt" {
+		if fname == "CREATEDAT" || fname == "UPDATEDAT" {
 			return true
 		}
 	}
